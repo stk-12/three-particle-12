@@ -147,23 +147,15 @@ export class Particle {
   _initParticleMesh() {
 
     const geometry = new THREE.TetrahedronGeometry(this.baseParams.sizeParticle, 0);
-    // const material = new THREE.MeshBasicMaterial({
-    //   color: 0xffffff,
-    // });
 
     for(let i = 0; i < this.countParticle; i++) {
-
-      // meshの色を設定
-      // const color = new THREE.Color();
-      // color.setHSL(random(0.0, 1.0), 0.5, 0.5);
-      // const color = new THREE.Color(this.colors[Math.floor(random(0, this.colors.length))]);
-      // const color = this.colors[Math.floor(random(0, this.colors.length))];
-      // const color = this.colors[Math.floor(random(0, 2))];
-      // mesh.material.color = color;
 
       const material = new THREE.MeshBasicMaterial({
         color: this.colors[Math.floor(random(0, this.colors.length))],
       });
+      // const material = new THREE.MeshPhongMaterial({
+      //   color: this.colors[Math.floor(random(0, this.colors.length))],
+      // });
 
       const mesh = new THREE.Mesh(geometry, material);
       mesh.position.set(
@@ -185,14 +177,23 @@ export class Particle {
     for(let i = 0; i < this.meshList.length; i++) {
       const mesh = this.meshList[i];
 
+      const randomDelay = Math.random() * delay; // delay：ランダムな遅延
+
       if (i < targetPositions.length / 3) {
         // 通常の処理
         gsap.to(mesh.position, {
-          duration: duration + Math.random() * delay, // delay：ランダムな遅延
+          duration: duration + randomDelay,
           ease: easing,
           x: targetPositions[i * 3],
           y: targetPositions[i * 3 + 1],
           z: targetPositions[i * 3 + 2],
+        });
+        gsap.to(mesh.scale, {
+          duration: duration + randomDelay,
+          ease: easing,
+          x: 1,
+          y: 1,
+          z: 1,
         });
 
       } else {
@@ -207,11 +208,21 @@ export class Particle {
 
         const randomIndex = Math.floor(random(0, targetPositions.length / 3));
         gsap.to(mesh.position, {
-          duration: duration + Math.random() * delay,
+          duration: duration + randomDelay,
           ease: easing,
           x: targetPositions[randomIndex * 3],
           y: targetPositions[randomIndex * 3 + 1],
           z: targetPositions[randomIndex * 3 + 2],
+        });
+
+        gsap.to(mesh.scale, {
+          duration: duration + randomDelay,
+          // duration: 0.2,
+          delay: randomDelay,
+          ease: easing,
+          x: 0,
+          y: 0,
+          z: 0,
         });
 
 
@@ -233,13 +244,13 @@ export class Particle {
     tl.to(this.meshList, {
       duration: 3.0,
       onStart: () => {
-        this._animateParticles(this.targetPositions.hello, 'hello', 1.8, 0.3, easeExplosion2);
+        this._animateParticles(this.targetPositions.hello, 'hello', 1.6, 0.2, easeExplosion2);
       }
     })
     .to(this.meshList, {
       duration: 3.0,
       onStart: () => {
-        this._animateParticles(this.targetPositions.goodbye, 'goodbye', 1.8, 0.3, easeExplosion2);
+        this._animateParticles(this.targetPositions.goodbye, 'goodbye', 1.6, 0.2, easeExplosion2);
       }
     })
   }

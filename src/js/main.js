@@ -53,8 +53,18 @@ class Main {
     this.scene.add(this.camera);
   }
 
+  _setLight() {
+    const dirLight = new THREE.DirectionalLight(0xFFFFFF, 0.9);
+    dirLight.position.set(1, 10, 1);
+    this.scene.add(dirLight);
+
+    const ambLight = new THREE.AmbientLight(0xFFFFFF, 0.7);
+    this.scene.add(ambLight);
+  }
+
   _init() {
     this._setCamera();
+    this._setLight();
     this._setControlls();
   }
 

@@ -149,7 +149,7 @@ export class Particle {
   // 頂点にパーティクルを配置
   _initParticleMesh() {
 
-    const geometry = new THREE.TetrahedronGeometry(10, 0);
+    const geometry = new THREE.TetrahedronGeometry(12, 0);
     const material = new THREE.MeshBasicMaterial({
       color: 0xffffff,
     });
@@ -161,6 +161,8 @@ export class Particle {
         this.targetPositions.goodbye[i * 3 + 1],
         this.targetPositions.goodbye[i * 3 + 2]
       );
+      mesh.rotation.set(random(0, 2 * Math.PI), random(0, 2 * Math.PI), random(0, 2 * Math.PI));
+
       this.meshList.push(mesh);
 
       this.scene.add(mesh);
@@ -185,13 +187,23 @@ export class Particle {
 
       } else {
         // 余ったメッシュの処理
+        // gsap.to(mesh.position, {
+        //   duration: duration + Math.random() * delay,
+        //   ease: easing,
+        //   x: random(-1000, 1000),
+        //   y: random(-1000, 1000),
+        //   z: random(-1000, -500),
+        // });
+
+        const randomIndex = Math.floor(random(0, targetPositions.length / 3));
         gsap.to(mesh.position, {
           duration: duration + Math.random() * delay,
           ease: easing,
-          x: random(-1000, 1000),
-          y: random(-1000, 1000),
-          z: random(-1000, -500),
+          x: targetPositions[randomIndex * 3],
+          y: targetPositions[randomIndex * 3 + 1],
+          z: targetPositions[randomIndex * 3 + 2],
         });
+
 
       }
 
@@ -227,8 +239,8 @@ export class Particle {
     const elapsedTime = this.clock.getElapsedTime();
 
     this.meshList.forEach((mesh, index) => {
-      mesh.rotation.y += 0.01;
-      mesh.rotation.z += 0.01;
+      mesh.rotation.y += 0.02;
+      mesh.rotation.z += 0.02;
     });
   }
 

@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { Particle } from './particle';
 
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 class Main {
   constructor() {
     this.viewport = {
@@ -54,6 +55,7 @@ class Main {
 
   _init() {
     this._setCamera();
+    this._setControlls();
   }
 
   _update() {
@@ -91,6 +93,11 @@ class Main {
   _addEvent() {
     window.addEventListener("resize", this._onResize.bind(this));
     window.addEventListener("mousemove", this._onMousemove.bind(this));
+  }
+
+  _setControlls() {
+    this.controls = new OrbitControls(this.camera, this.canvas);
+    this.controls.enableDamping = true;
   }
 }
 

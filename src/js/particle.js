@@ -202,6 +202,8 @@ export class Particle {
           };
           this._setImageGeometries(imagePixels, index, imageInfo.name);
 
+          // this._initParticleMesh(imageInfo.name);
+
           resolve();
         });
       });
@@ -276,8 +278,8 @@ export class Particle {
     // パーティクル数を設定
     if(imageName === 'goodbye') {
       this.countParticle = filteredPositions.length / 3;
+      console.log('パーティクル数', filteredPositions.length / 3);
     }
-    console.log('パーティクル数', filteredPositions.length / 3);
 
     this.targetPositions[imageName] = [...geometry.attributes.position.array];
 
@@ -395,9 +397,9 @@ export class Particle {
     for(let i = 0; i < this.countParticle; i++) {
       const mesh = new THREE.Mesh(geometry, material);
       mesh.position.set(
-        this.targetPositions.hello[i * 3],
-        this.targetPositions.hello[i * 3 + 1],
-        this.targetPositions.hello[i * 3 + 2]
+        this.targetPositions.goodbye[i * 3],
+        this.targetPositions.goodbye[i * 3 + 1],
+        this.targetPositions.goodbye[i * 3 + 2]
       );
       this.meshList.push(mesh);
 
@@ -410,61 +412,21 @@ export class Particle {
 
     // const targetPositions = this.targetPositions[shapeName];
 
+    console.log(this.meshList.length);
+    console.log(targetPositions.length);
+
     for(let i = 0; i < this.meshList.length; i++) {
       const mesh = this.meshList[i];
-      const positions = mesh.geometry.attributes.position.array;
 
-      for (let i = 0; i < positions.length; i+=3) {
-        // アニメーション用中間オブジェクト
-        const intermediateObject = {
-          x: positions[i],
-          y: positions[i+1],
-          z: positions[i+2]
-        };
-  
-        gsap.to(intermediateObject, {
-          duration: duration + Math.random() * delay, // delay：ランダムな遅延
-          ease: easing,
-          x: targetPositions[i],
-          y: targetPositions[i+1],
-          z: targetPositions[i+2],
-          onUpdate: () => {
-            positions[i] = intermediateObject.x;
-            // positions[i] = intermediateObject.x + noise(intermediateObject.x, intermediateObject.y, intermediateObject.z);
-            positions[i+1] = intermediateObject.y;
-            positions[i+2] = intermediateObject.z;
-            mesh.geometry.attributes.position.needsUpdate = true;
-          }
-        });
-      }
+      gsap.to(mesh.position, {
+        duration: duration + Math.random() * delay, // delay：ランダムな遅延
+        ease: easing,
+        x: targetPositions[i * 3],
+        y: targetPositions[i * 3 + 1],
+        z: targetPositions[i * 3 + 2],
+      });
     }
-    
-    // const positions = this.particlesMesh.geometry.attributes.position.array;
 
-
-    // for (let i = 0; i < positions.length; i+=3) {
-    //   // アニメーション用中間オブジェクト
-    //   const intermediateObject = {
-    //     x: positions[i],
-    //     y: positions[i+1],
-    //     z: positions[i+2]
-    //   };
-
-    //   gsap.to(intermediateObject, {
-    //     duration: duration + Math.random() * delay, // delay：ランダムな遅延
-    //     ease: easing,
-    //     x: targetPositions[i],
-    //     y: targetPositions[i+1],
-    //     z: targetPositions[i+2],
-    //     onUpdate: () => {
-    //       positions[i] = intermediateObject.x;
-    //       // positions[i] = intermediateObject.x + noise(intermediateObject.x, intermediateObject.y, intermediateObject.z);
-    //       positions[i+1] = intermediateObject.y;
-    //       positions[i+2] = intermediateObject.z;
-    //       this.particlesMesh.geometry.attributes.position.needsUpdate = true;
-    //     }
-    //   });
-    // }
   }
 
   // ---------------------------------------------------------
@@ -475,16 +437,24 @@ export class Particle {
     const easeExplosion2 = CustomEase.create("custom", "M0,0 C0.105,0 0.169,0.013 0.2,0.1 0.238,0.209 0.25,0.382 0.25,0.504 0.25,0.636 0.235,0.825 0.3,0.9 0.386,1 0.771,1 1,1 ");
 
 
-    // setTimeout(() => {
-    //   this._animateParticles(this.targetPositions.goodbye, 'goodbye', 1.3, 0.3, easeExplosion);
-    // }, 1000);
-    this._animateParticles(this.targetPositions.goodbye, 'goodbye', 1.3, 0.3, easeExplosion);
+    const tl = gsap.timeline({ repeat: -1 });
+    tl.to(this.meshList, {
+      duration: 3.0,
+      onStart: () => {
+        this._animateParticles(this.targetPositions.hello, 'hello', 1.8, 0.3, easeExplosion2);
+      }
+    })
+    .to(this.meshList, {
+      duration: 3.0,
+      onStart: () => {
+        this._animateParticles(this.targetPositions.goodbye, 'goodbye', 1.8, 0.3, easeExplosion2);
+      }
+    })
   }
 
 
   onUpdate() {
     const elapsedTime = this.clock.getElapsedTime();
-    // this.uniforms.uTime.value = elapsedTime * 0.5;
 
     this.meshList.forEach((mesh, index) => {
       mesh.rotation.y += 0.01;

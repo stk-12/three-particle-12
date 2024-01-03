@@ -55,18 +55,18 @@ export class Particle {
     this.clock = new THREE.Clock();
 
     
-    this.color1 = new THREE.Color(0xf88dc5); // 濃ピンク
-    this.color2 = new THREE.Color(0xfd79ff); // 薄ピンク
-
-    this.color3 = new THREE.Color(0xf88dc5); // 濃ピンク
-    this.color4 = new THREE.Color(0xfd79ff); // 薄ピンク
-
-
-
+    this.colors = [
+      // 0xf67280,
+      // 0xc06c84,
+      // 0x6c5b7b,
+      0x046d8b,
+      0x309292,
+      0x2fb8ac,
+    ];
 
 
     // 検証用
-    this.gui = new GUI();
+    // this.gui = new GUI();
     // this._setGUI();
 
   }
@@ -109,7 +109,7 @@ export class Particle {
 
 
     // 検証用
-    this._setGUI();
+    // this._setGUI();
 
   }
 
@@ -147,11 +147,24 @@ export class Particle {
   _initParticleMesh() {
 
     const geometry = new THREE.TetrahedronGeometry(this.baseParams.sizeParticle, 0);
-    const material = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-    });
+    // const material = new THREE.MeshBasicMaterial({
+    //   color: 0xffffff,
+    // });
 
     for(let i = 0; i < this.countParticle; i++) {
+
+      // meshの色を設定
+      // const color = new THREE.Color();
+      // color.setHSL(random(0.0, 1.0), 0.5, 0.5);
+      // const color = new THREE.Color(this.colors[Math.floor(random(0, this.colors.length))]);
+      // const color = this.colors[Math.floor(random(0, this.colors.length))];
+      // const color = this.colors[Math.floor(random(0, 2))];
+      // mesh.material.color = color;
+
+      const material = new THREE.MeshBasicMaterial({
+        color: this.colors[Math.floor(random(0, this.colors.length))],
+      });
+
       const mesh = new THREE.Mesh(geometry, material);
       mesh.position.set(
         this.targetPositions.goodbye[i * 3],

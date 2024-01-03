@@ -13,16 +13,13 @@ export class Particle {
 
     this.baseParams = {
       ratio: 1.0, // 画面サイズによって変わる倍率
-      scaleModel: {
-        explosion: 180.0,
-        explosion_small: 280.0,
-        logo: 300.0,
-      },
+      sizeParticle: 12.0,
       sizeImage: {
         width: 1400,
         height: 400
       },
     }
+    this._updateBaseParamsRatio();
 
     this.promiseList = [];
 
@@ -149,7 +146,7 @@ export class Particle {
   // 頂点にパーティクルを配置
   _initParticleMesh() {
 
-    const geometry = new THREE.TetrahedronGeometry(12, 0);
+    const geometry = new THREE.TetrahedronGeometry(this.baseParams.sizeParticle, 0);
     const material = new THREE.MeshBasicMaterial({
       color: 0xffffff,
     });
@@ -232,6 +229,18 @@ export class Particle {
         this._animateParticles(this.targetPositions.goodbye, 'goodbye', 1.8, 0.3, easeExplosion2);
       }
     })
+  }
+
+  _updateBaseParamsRatio() {
+    // 現在の画面サイズ
+    const currentWidth = window.innerWidth;
+    const currentHeight = window.innerHeight;
+
+    // 基準サイズとの比率
+    const widthRatio = currentWidth / 1600;
+    const heightRatio = currentHeight / 900;
+
+    this.baseParams.ratio = Math.min(widthRatio, heightRatio);
   }
 
 

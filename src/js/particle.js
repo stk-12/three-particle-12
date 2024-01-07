@@ -1,4 +1,4 @@
-import { random } from './utils';
+import { random, radian } from './utils';
 import { imagePixel } from './imagePixel';
 import * as THREE from "three";
 import GUI from "lil-gui";
@@ -247,12 +247,22 @@ export class Particle {
         this._animateParticles(this.targetPositions.hello, 'hello', 1.6, 0.2, easeExplosion2);
       }
     })
+    // .to(this.scene.rotation, {
+    //   duration: 2.0,
+    //   y: radian(40),
+    //   ease: easeExplosion2,
+    // }, '<')
     .to(this.meshList, {
       duration: 3.0,
       onStart: () => {
         this._animateParticles(this.targetPositions.goodbye, 'goodbye', 1.6, 0.2, easeExplosion2);
       }
     })
+    // .to(this.scene.rotation, {
+    //   duration: 2.0,
+    //   y: radian(-40),
+    //   ease: easeExplosion2,
+    // }, '<')
   }
 
   _updateBaseParamsRatio() {

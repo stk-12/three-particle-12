@@ -242,7 +242,7 @@ export class Particle {
 
     const tl = gsap.timeline({ repeat: -1 });
     tl.to(this.meshList, {
-      duration: 3.0,
+      duration: 5.0,
       onStart: () => {
         this._animateParticles(this.targetPositions.hello, 'hello', 1.6, 0.2, easeExplosion2);
       }
@@ -253,7 +253,7 @@ export class Particle {
     //   ease: easeExplosion2,
     // }, '<')
     .to(this.meshList, {
-      duration: 3.0,
+      duration: 5.0,
       onStart: () => {
         this._animateParticles(this.targetPositions.goodbye, 'goodbye', 1.6, 0.2, easeExplosion2);
       }

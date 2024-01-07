@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { gsap } from "gsap";
 import { Particle } from './particle';
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -27,6 +28,10 @@ class Main {
 
     this.group = new THREE.Group();
     this.scene.add(this.group);
+
+    // Raycasterの初期化
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector2();
 
     this._init();
     this._update();
@@ -68,15 +73,45 @@ class Main {
     this._setControlls();
   }
 
+  _scaleAnimation(mesh) {
+    const tl = gsap.timeline();
+    tl.to(mesh.scale, {
+      duration: 0.2,
+      x: 3,
+      y: 3,
+      z: 3,
+      ease: "expo.out"
+    })
+    .to(mesh.scale, {
+      duration: 0.2,
+      x: 1,
+      y: 1,
+      z: 1,
+      ease: "expo.out"
+    })
+  }
+
   _update() {
 
     if(this.partcle) {
       this.partcle.onUpdate();
     }
 
-    const parallaxX = this.cursor.x;
-    const parallaxY = - this.cursor.y;
+    // const parallaxX = this.cursor.x;
+    // const parallaxY = - this.cursor.y;
 
+    // Raycasterを更新
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+
+    // 交差しているオブジェクトを検出
+    const intersects = this.raycaster.intersectObjects(this.scene.children);
+
+    if (intersects.length > 0) {
+      // console.log(intersects[0].object);
+
+      this._scaleAnimation(intersects[0].object);   
+
+    }
 
     //レンダリング
     this.renderer.render(this.scene, this.camera);
@@ -95,9 +130,15 @@ class Main {
     this.camera.updateProjectionMatrix();
   }
 
+  // _onMousemove(e) {
+  //   this.cursor.x = e.clientX / this.viewport.width - 0.5;
+  //   this.cursor.y = e.clientY / this.viewport.height - 0.5;
+  // }
+
   _onMousemove(e) {
-    this.cursor.x = e.clientX / this.viewport.width - 0.5;
-    this.cursor.y = e.clientY / this.viewport.height - 0.5;
+    // 画面上のマウスの位置を正規化した値に変換
+    this.mouse.x = ( e.clientX / this.viewport.width ) * 2 - 1;
+    this.mouse.y = - ( e.clientY / this.viewport.height ) * 2 + 1;
   }
 
   _addEvent() {

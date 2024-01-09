@@ -1,3 +1,4 @@
+import { radian } from './utils';
 import * as THREE from "three";
 import { gsap } from "gsap";
 import { Particle } from './particle';
@@ -74,21 +75,29 @@ class Main {
   }
 
   _scaleAnimation(mesh) {
+    if(mesh.scale.x > 1) return;
     const tl = gsap.timeline();
     tl.to(mesh.scale, {
-      duration: 0.2,
-      x: 3,
-      y: 3,
-      z: 3,
+      duration: 0.3,
+      x: 2.5,
+      y: 2.5,
+      z: 2.5,
       ease: "expo.out"
     })
+    // .to(mesh.position, {
+    //   duration: 0.3,
+    //   z: "+=20",
+    //   // y: 3,
+    //   // z: 3,
+    //   ease: "expo.out"
+    // }, "<")
     .to(mesh.scale, {
       duration: 0.2,
       x: 1,
       y: 1,
       z: 1,
       ease: "expo.out"
-    })
+    }, "+=0.2")
   }
 
   _update() {
@@ -106,9 +115,7 @@ class Main {
     // 交差しているオブジェクトを検出
     const intersects = this.raycaster.intersectObjects(this.scene.children);
 
-    if (intersects.length > 0) {
-      // console.log(intersects[0].object);
-
+    if (intersects.length) {
       this._scaleAnimation(intersects[0].object);   
 
     }

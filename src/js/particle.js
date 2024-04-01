@@ -3,8 +3,10 @@ import { imagePixel } from './imagePixel';
 import * as THREE from "three";
 import GUI from "lil-gui";
 import { gsap } from "gsap";
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CustomEase } from "gsap/CustomEase";
-gsap.registerPlugin(CustomEase);
+gsap.registerPlugin(ScrollTrigger, CustomEase);
+// gsap.registerPlugin(CustomEase);
 
 export class Particle {
   constructor(scene, viewport) {
@@ -104,7 +106,8 @@ export class Particle {
     // Promise後の初期化処理を行う
     this._initParticleMesh();
 
-    this._setAnimation();
+    // this._setAnimation();
+    this._setScrollAnimation();
 
 
 
@@ -159,9 +162,9 @@ export class Particle {
 
       const mesh = new THREE.Mesh(geometry, material);
       mesh.position.set(
-        this.targetPositions.goodbye[i * 3],
-        this.targetPositions.goodbye[i * 3 + 1],
-        this.targetPositions.goodbye[i * 3 + 2]
+        this.targetPositions.hello[i * 3],
+        this.targetPositions.hello[i * 3 + 1],
+        this.targetPositions.hello[i * 3 + 2]
       );
       mesh.rotation.set(random(0, 2 * Math.PI), random(0, 2 * Math.PI), random(0, 2 * Math.PI));
 
@@ -263,6 +266,25 @@ export class Particle {
     //   y: radian(-40),
     //   ease: easeExplosion2,
     // }, '<')
+  }
+
+  _setScrollAnimation() {
+    const easeExplosion = CustomEase.create("custom", "M0,0 C0.018,0.516 0.008,0.755 0.123,0.861 0.232,0.963 0.374,1 1,1 ");
+    const easeExplosion2 = CustomEase.create("custom", "M0,0 C0.105,0 0.169,0.013 0.2,0.1 0.238,0.209 0.25,0.382 0.25,0.504 0.25,0.636 0.235,0.825 0.3,0.9 0.386,1 0.771,1 1,1 ");
+
+    const tlScrollTtl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.js-section-02',
+        start: 'top 98%',
+        onEnter: () => {
+          this._animateParticles(this.targetPositions.goodbye, 'goodbye', 1.6, 0.2, easeExplosion2);
+        },
+        onLeaveBack: () => {
+          this._animateParticles(this.targetPositions.hello, 'hello', 1.6, 0.2, easeExplosion2);
+        },
+        markers: true,
+      }
+    });
   }
 
   _updateBaseParamsRatio() {

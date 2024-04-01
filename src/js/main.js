@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 import { Particle } from './particle';
 
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 class Main {
   constructor() {
     this.viewport = {
@@ -71,7 +71,7 @@ class Main {
   _init() {
     this._setCamera();
     this._setLight();
-    this._setControlls();
+    // this._setControlls();
   }
 
   _scaleAnimation(mesh) {
@@ -153,10 +153,10 @@ class Main {
     window.addEventListener("mousemove", this._onMousemove.bind(this));
   }
 
-  _setControlls() {
-    this.controls = new OrbitControls(this.camera, this.canvas);
-    this.controls.enableDamping = true;
-  }
+  // _setControlls() {
+  //   this.controls = new OrbitControls(this.camera, this.canvas);
+  //   this.controls.enableDamping = true;
+  // }
 }
 
 new Main();
